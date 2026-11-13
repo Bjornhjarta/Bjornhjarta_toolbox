@@ -1,0 +1,2 @@
+PowerShell 5.1 — one-line build from your current project location:
+Set-Location -LiteralPath "C:\Users\Kevin\Documents\Enshrouded O' Thing's\Bjornhjarta-Enshrouded-ToolBox"; if ($?) { dotnet clean .\Bjornhjarta.sln; if ($LASTEXITCODE -eq 0) { dotnet build .\Bjornhjarta.sln; if ($LASTEXITCODE -eq 0) { dotnet run --project .\src\Bjornhjarta.Desktop\Bjornhjarta.Desktop.csproj } } }

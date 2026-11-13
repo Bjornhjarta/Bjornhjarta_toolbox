@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <Version>1.0.0-rc.2</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>Bjornhjarta - Enshrouded ToolBox</Product>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ApplicationIcon>Assets\Brand\BjornhjartaToolBox.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bjornhjarta.Core\Bjornhjarta.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\Icons\**\*.png" />
+    <None Remove="Assets\Brand\**\*" />
+    <Resource Include="Assets\Brand\**\*" />
+    <Resource Include="Assets\Icons\**\*.png" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,263 @@
+<Window x:Class="Bjornhjarta.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Icon="/Assets/Brand/BjornhjartaToolBox.ico"
+        Title="Bjornhjarta - Enshrouded ToolBox v1.0.0 RC2"
+        Width="1240" Height="790" MinWidth="950" MinHeight="620"
+        UseLayoutRounding="True" SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgBrush}">
+    <Window.Resources>
+        <Style x:Key="SidebarNavButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="Background" Value="#171D17"/>
+            <Setter Property="BorderBrush" Value="#303A2E"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="NavBorder" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="NavIcon" Grid.Column="0" Width="25" Height="25"
+                                       Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Stretch="Uniform" VerticalAlignment="Center"
+                                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center"
+                                                  HorizontalAlignment="Left" RecognizesAccessKey="True"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                  TextElement.Foreground="{TemplateBinding Foreground}"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="NavBorder" Property="Background" Value="#223020"/>
+                                <Setter TargetName="NavBorder" Property="BorderBrush" Value="{StaticResource RuneBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource RuneBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="NavBorder" Property="Background" Value="#2B3B27"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="264"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Fixed header and footer, scrollable navigation: no clipping at minimum height. -->
+        <Border Grid.Column="0" Background="#101410" BorderBrush="#303A2E" BorderThickness="0,0,1,0">
+            <Grid Margin="18,18,18,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Brand text is constrained to the column beside the emblem. -->
+                <Grid Grid.Row="0" Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Source="/Assets/Brand/BjornhjartaToolBox.png"
+                           Width="46" Height="46" Stretch="Uniform" VerticalAlignment="Top"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="BJORNHJARTA" FontSize="18" FontWeight="Black"
+                                   Foreground="{StaticResource RuneBrush}" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="THE BERSERKER FORGE" FontSize="10" FontWeight="Bold"
+                                   Foreground="{StaticResource BloodBrush}" Margin="0,4,0,0"/>
+                        <TextBlock Text="ENSHROUDED TOOLBOX" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="{StaticResource MutedBrush}" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </Grid>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                              Focusable="False">
+                    <StackPanel>
+                        <Button Content="Dashboard" Tag="/Assets/Icons/vegvisir-ivory.png" Style="{StaticResource SidebarNavButtonStyle}" Click="Dashboard_Click"/>
+                        <Button Content="EML Mod Manager" Tag="/Assets/Icons/raven-ivory.png" Style="{StaticResource SidebarNavButtonStyle}" Click="ModManager_Click"/>
+                        <Button Content="Blueprint Forge" Tag="/Assets/Icons/berkana-ivory.png" Style="{StaticResource SidebarNavButtonStyle}" Click="Blueprint_Click"/>
+                        <Separator Background="#455A43" Margin="0,9,0,14"/>
+                        <TextBlock Text="FUTURE MODULES" FontSize="10" FontWeight="Bold"
+                                   Foreground="{StaticResource MutedBrush}" Margin="2,0,0,10"/>
+                        <Button Content="Creative Tools" Tag="/Assets/Icons/crossed-axes-ivory.png" Style="{StaticResource SidebarNavButtonStyle}" Click="Placeholder_Click"/>
+                        <Button Content="Item Vault" Tag="/Assets/Icons/berkana-ivory.png" Style="{StaticResource SidebarNavButtonStyle}" Click="Placeholder_Click"/>
+                        <Button Content="World Explorer" Tag="/Assets/Icons/raven-ivory.png" Style="{StaticResource SidebarNavButtonStyle}" Click="Placeholder_Click"/>
+                        <Button Content="Loadouts" Tag="/Assets/Icons/crossed-axes-ivory.png" Style="{StaticResource SidebarNavButtonStyle}" Click="Placeholder_Click"/>
+                        <Button Content="Community" Tag="/Assets/Icons/raven-ivory.png" Style="{StaticResource SidebarNavButtonStyle}" Click="Placeholder_Click"/>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" Margin="0,10,0,0">
+                    <Separator Background="#455A43" Margin="0,0,0,12"/>
+                    <TextBlock x:Name="SidebarVersionText" Text="RELEASE CANDIDATE"
+                               FontSize="11" FontWeight="Bold" TextWrapping="Wrap"
+                               Foreground="{StaticResource RuneBrush}"/>
+                    <TextBlock Text="Preview build · Windows validation required"
+                               FontSize="11" Foreground="{StaticResource MutedBrush}"
+                               TextWrapping="Wrap" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Margin="26,24,26,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,22">
+                <StackPanel>
+                    <TextBlock x:Name="PageTitle" Text="THE GREAT HALL" FontSize="27" FontWeight="Bold"/>
+                    <TextBlock x:Name="PageSubtitle" Text="Your tools. Your world. Your saga."
+                               FontSize="13" Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0"/>
+                </StackPanel>
+                <Border DockPanel.Dock="Right" Background="#1B2819" BorderBrush="#41683A"
+                        BorderThickness="1" CornerRadius="4" Padding="12,7" VerticalAlignment="Top">
+                    <TextBlock Text="●  DESKTOP READY" Foreground="{StaticResource RuneBrush}"
+                               FontSize="11" FontWeight="Bold"/>
+                </Border>
+            </DockPanel>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <!-- The description is explicitly left-aligned. MaxWidth alone caused it to float toward the middle. -->
+                    <Border Background="{StaticResource PanelBrush}" BorderBrush="#455A43" BorderThickness="1"
+                            CornerRadius="8" Padding="24" Margin="0,0,0,16">
+                        <StackPanel HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="/Assets/Icons/raven-green.png" Width="22" Height="22"
+                                       Margin="0,0,8,0" Stretch="Uniform"
+                                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock Text="WELCOME, WARRIOR" Foreground="{StaticResource RuneBrush}"
+                                           FontSize="12" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock Text="Forge your legend." FontSize="32" FontWeight="Bold"
+                                       Margin="0,10,0,8"/>
+                            <TextBlock Text="Bjornhjarta brings building and server tools together. Blueprint editing stays offline; the EML Manager only changes game-directory files when you explicitly request an operation, and backs up replaced files."
+                                       TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"
+                                       FontSize="14" MaxWidth="800" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Explicit two-column layout and wrapping support smaller window sizes. -->
+                    <UniformGrid Columns="2" Rows="2" Margin="0,0,0,16">
+                        <Border Background="{StaticResource PanelBrush}" BorderBrush="#303A2E" BorderThickness="1"
+                                CornerRadius="6" Padding="16" Margin="0,0,8,8" MinHeight="112">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="/Assets/Icons/berkana-ivory.png" Width="30" Height="30"
+                                       VerticalAlignment="Center" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="01 / BLUEPRINT FORGE" Foreground="{StaticResource RuneBrush}"
+                                               FontSize="11" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="2D/3D editors + model mapping" FontSize="17"
+                                               TextWrapping="Wrap" Margin="0,7,0,4"/>
+                                    <TextBlock Text="Local blueprints, images and model assets" FontSize="12"
+                                               TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <Border Background="{StaticResource PanelBrush}" BorderBrush="#303A2E" BorderThickness="1"
+                                CornerRadius="6" Padding="16" Margin="0,0,0,8" MinHeight="112">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="/Assets/Icons/raven-ivory.png" Width="30" Height="30"
+                                       VerticalAlignment="Center" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="02 / MOD FRAMEWORK" Foreground="{StaticResource RuneBrush}"
+                                               FontSize="11" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="EML Mod Manager" FontSize="17" TextWrapping="Wrap" Margin="0,7,0,4"/>
+                                    <TextBlock Text="Client / Dedicated Server profiles" FontSize="12"
+                                               TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <Border Background="{StaticResource PanelBrush}" BorderBrush="#303A2E" BorderThickness="1"
+                                CornerRadius="6" Padding="16" Margin="0,0,8,0" MinHeight="112">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="/Assets/Icons/vegvisir-ivory.png" Width="30" Height="30"
+                                       VerticalAlignment="Center" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="03 / GAME STATUS" Foreground="{StaticResource RuneBrush}"
+                                               FontSize="11" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="Not monitored" FontSize="17" TextWrapping="Wrap" Margin="0,7,0,4"/>
+                                    <TextBlock Text="Game process monitoring is not yet available" FontSize="12"
+                                               TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <Border Background="{StaticResource PanelBrush}" BorderBrush="#303A2E" BorderThickness="1"
+                                CornerRadius="6" Padding="16" MinHeight="112">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="/Assets/Icons/crossed-axes-ivory.png" Width="30" Height="30"
+                                       VerticalAlignment="Center" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="04 / COMMUNITY" Foreground="{StaticResource RuneBrush}"
+                                               FontSize="11" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    <TextBlock Text="Coming later" FontSize="17" TextWrapping="Wrap" Margin="0,7,0,4"/>
+                                    <TextBlock Text="Blueprint sharing and community tools" FontSize="12"
+                                               TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </UniformGrid>
+
+                    <Border Background="#171B16" BorderBrush="#633034" BorderThickness="1"
+                            CornerRadius="6" Padding="18">
+                        <StackPanel>
+                            <TextBlock Text="RELEASE CHECKPOINT" Foreground="{StaticResource BloodBrush}"
+                                       FontWeight="Bold" FontSize="11"/>
+                            <TextBlock Text="Validate Blueprint Forge &amp; EML Manager"
+                                       FontSize="20" FontWeight="Bold" TextWrapping="Wrap" Margin="0,6,0,6"/>
+                            <TextBlock Text="Release candidate: verify the portable Windows build, check 2D/3D editor workflows and test EML safely before the stable v1.0.0 release."
+                                       FontSize="13" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+                            <WrapPanel Margin="0,14,0,0">
+                                <Button Content="Open Blueprint Forge" Click="Blueprint_Click"/>
+                                <Button Content="Open EML Mod Manager" Click="ModManager_Click"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,16,0,0">
+                <Image Source="/Assets/Icons/vegvisir-green.png" Width="16" Height="16" Margin="0,0,7,0"
+                       Stretch="Uniform"/>
+                <TextBlock Text="BUILT FOR THE NORTH  •  COMMUNITY EDITION"
+                           Foreground="{StaticResource MutedBrush}" FontSize="11" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

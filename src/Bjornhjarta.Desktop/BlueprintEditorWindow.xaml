@@ -1,0 +1,183 @@
+<Window x:Class="Bjornhjarta.Desktop.BlueprintEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Icon="/Assets/Brand/BjornhjartaToolBox.ico"
+        Title="Bjornhjarta - Blueprint Forge v1.0.0 RC2" Width="1500" Height="900" MinWidth="1150" MinHeight="700"
+        WindowStartupLocation="CenterOwner" Background="{StaticResource BgBrush}" PreviewKeyDown="Window_PreviewKeyDown">
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,14">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Image Source="/Assets/Brand/BjornhjartaToolBox.png" Width="42" Height="42" Margin="0,0,12,0"
+                       Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"/>
+                <StackPanel>
+                    <TextBlock Text="BLUEPRINT FORGE" FontSize="25" FontWeight="Bold" Foreground="{StaticResource RuneBrush}"/>
+                    <TextBlock Text="2D and 3D editors • local textured models • one-click model linking" Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0"/>
+                </StackPanel>
+            </StackPanel>
+            <TextBlock DockPanel.Dock="Right" Text="BLUEPRINT FORGE 1.0.0 RC2" Foreground="{StaticResource BloodBrush}" FontWeight="Bold" VerticalAlignment="Top"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Margin="0,0,0,12">
+            <WrapPanel>
+                <Button Content="New" Click="New_Click"/>
+                <Button Content="Open JSON" Click="Open_Click"/>
+                <Button Content="Open Backup" Click="OpenBackup_Click" ToolTip="Recover a valid .bak blueprint into a new unsaved document. Use Save JSON to choose a new filename."/>
+                <Button Content="Save JSON" Click="Save_Click"/>
+                <Button Content="Validate" Click="Validate_Click"/>
+                <Button Content="Undo  Ctrl+Z" Click="Undo_Click"/>
+                <Button Content="Redo  Ctrl+Y" Click="Redo_Click"/>
+                <Button Content="Duplicate  Ctrl+D" Click="Duplicate_Click"/>
+                <Button Content="Copy Group  Ctrl+C" Click="CopyGroup_Click"/>
+                <Button Content="Paste Group  Ctrl+V" Click="PasteGroup_Click"/>
+                <Button Content="Rotate 90°" Click="Rotate90_Click"/>
+                <Button Content="Model Asset Library" Click="AssetLibrary_Click"/>
+                <Button Content="Auto-map Models" Click="AutoMapModels_Click" ToolTip="Link unmapped blueprint elements using unique Type IDs in the local model library. Existing assignments are preserved."/>
+                <Button Content="Image to Blueprint" Click="ImageToBlueprint_Click" ToolTip="Generate an editable approximate building blockout from a local reference image"/>
+            </WrapPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                <TextBlock Text="Blueprint name:" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox x:Name="BlueprintNameBox" Width="230" Padding="7" Background="#19251D" Foreground="{StaticResource TextBrush}" BorderBrush="#465342"/>
+            </StackPanel>
+        </DockPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="270"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="350"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Background="{StaticResource PanelBrush}" BorderBrush="#455A43" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,0,10,0">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+                        <Image Source="/Assets/Icons/berkana-green.png" Width="17" Height="17" Margin="0,0,7,0" Stretch="Uniform"/>
+                        <TextBlock Text="BUILDING LIBRARY" FontWeight="Bold" Foreground="{StaticResource RuneBrush}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TabControl x:Name="SidebarTabs" Background="#182018" Foreground="White" BorderBrush="#455A43">
+                        <TabItem Header="PLACEABLES">
+                            <DockPanel Margin="5">
+                                <StackPanel DockPanel.Dock="Top">
+                                    <TextBox x:Name="PlaceableSearchBox" TextChanged="PlaceablesFilter_Changed" Margin="0,4,0,7" Padding="6"
+                                             Background="#19251D" Foreground="White" BorderBrush="#465342" ToolTip="Search by name, category or Type ID"/>
+                                    <ComboBox x:Name="PlaceableCategoryCombo" Height="29" Margin="0,0,0,7" SelectionChanged="PlaceablesFilter_Changed"
+                                              Background="#253B29" Foreground="White"/>
+                                    <WrapPanel Margin="0,0,0,6">
+                                        <Button Content="Add selected" Click="PlaceablesAdd_Click"/>
+                                        <Button Content="Import catalog" Click="PlaceablesImport_Click"/>
+                                    </WrapPanel>
+                                    <TextBlock Text="Example entries are not verified game IDs. Import your own Type ID catalog to use actual IDs."
+                                               Foreground="#E4C79E" FontSize="10" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                                </StackPanel>
+                                <DataGrid x:Name="PlaceablesGrid" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                                          SelectionMode="Extended" SelectionUnit="FullRow" Background="#111611" Foreground="White"
+                                          RowBackground="#182018" AlternatingRowBackground="#202820" BorderBrush="#455A43"
+                                          GridLinesVisibility="Horizontal" HeadersVisibility="Column">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Placeable" Binding="{Binding Name}" Width="*"/>
+                                        <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="110"/>
+                                        <DataGridTextColumn Header="Type ID" Binding="{Binding TypeId}" Width="125"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DockPanel>
+                        </TabItem>
+                        <TabItem Header="PLACED ELEMENTS">
+                            <DockPanel Margin="5">
+                                <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                    <Button Content="+ Add" Click="Add_Click"/>
+                                    <Button Content="Samples" Click="AddSamples_Click"/>
+                                    <Button Content="Remove Selected" Click="Remove_Click"/>
+                                </WrapPanel>
+                                <DataGrid x:Name="ElementsGrid" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False"
+                                          SelectionMode="Extended" SelectionUnit="FullRow" Background="#111611" Foreground="{StaticResource TextBrush}"
+                                          RowBackground="#182018" AlternatingRowBackground="#202820" BorderBrush="#455A43"
+                                          GridLinesVisibility="Horizontal" HeadersVisibility="Column" SelectionChanged="ElementsGrid_SelectionChanged" CellEditEnding="ElementsGrid_CellEditEnding">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Type ID" Binding="{Binding TypeId, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                                        <DataGridTextColumn Header="MODEL ASSET" Binding="{Binding ModelAssetName}" Width="1.1*" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="X" Binding="{Binding Position.X, UpdateSourceTrigger=PropertyChanged}" Width="48"/>
+                                        <DataGridTextColumn Header="Y" Binding="{Binding Position.Y, UpdateSourceTrigger=PropertyChanged}" Width="48"/>
+                                        <DataGridTextColumn Header="Z" Binding="{Binding Position.Z, UpdateSourceTrigger=PropertyChanged}" Width="48"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DockPanel>
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+            </Border>
+            <Border Grid.Column="1" Background="{StaticResource PanelBrush}" BorderBrush="#455A43" BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,0,10,0">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,8">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="GridHeadingText" Text="2D BUILD GRID" Foreground="{StaticResource RuneBrush}" FontWeight="Bold" VerticalAlignment="Center"/>
+                            <TextBlock Text="EDITOR" Foreground="{StaticResource MutedBrush}" FontSize="10" VerticalAlignment="Center" Margin="16,0,6,0"/>
+                            <ComboBox x:Name="GridModeComboBox" Width="155" Height="30"
+                                      Background="#253B29" Foreground="#FFFFFF" BorderBrush="#80C76C"
+                                      FontWeight="SemiBold" ToolTip="Choose the 2D or textured 3D editor">
+
+                                <ComboBoxItem Content="2D Editor"/>
+                                <ComboBoxItem Content="3D Editor"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                            <Button Content="−" Width="34" Click="ZoomOut_Click"/>
+                            <Button Content="+" Width="34" Click="ZoomIn_Click"/>
+                            <Button Content="Fit / Center" Click="CenterGrid_Click"/>
+                        </StackPanel>
+                    </DockPanel>
+                    <Grid Grid.Row="1">
+                        <Border x:Name="TwoDEditorSurface" BorderBrush="#465342" BorderThickness="1" Background="#0B100C" ClipToBounds="True">
+                            <Canvas x:Name="BlueprintCanvas" Background="#0B100C" SizeChanged="BlueprintCanvas_SizeChanged"
+                                    MouseLeftButtonDown="BlueprintCanvas_MouseLeftButtonDown" MouseMove="BlueprintCanvas_MouseMove"
+                                    MouseLeftButtonUp="BlueprintCanvas_MouseLeftButtonUp" MouseDown="BlueprintCanvas_MouseDown"
+                                    MouseUp="BlueprintCanvas_MouseUp" PreviewMouseWheel="BlueprintCanvas_PreviewMouseWheel"
+                                    LostMouseCapture="BlueprintCanvas_LostMouseCapture"/>
+                        </Border>
+                        <Border x:Name="ThreeDEditorSurface" BorderBrush="#465342" BorderThickness="1"
+                                Background="#0B100C" ClipToBounds="True" Visibility="Collapsed">
+                            <ContentControl x:Name="ThreeDEditorHost"/>
+                        </Border>
+                    </Grid>
+                    <TextBlock x:Name="DimensionsText" Grid.Row="2" Text="Estimated footprint: —  |  Vertical anchor span: —"
+                               Foreground="{StaticResource RuneBrush}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="2,8,2,0"/>
+                    <TextBlock x:Name="EditorHelpText" Grid.Row="3"
+                               Text="2D Editor: X/Z top-down grid • Left-drag markers to move • Drag empty space to select • Right-drag or middle-drag to pan • Mouse wheel to zoom • 1 cell = 4 m."
+                               Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="2,5,2,0"/>
+                </Grid>
+            </Border>
+            <Border Grid.Column="2" Background="{StaticResource PanelBrush}" BorderBrush="#455A43" BorderThickness="1" CornerRadius="6" Padding="14">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="ELEMENT INSPECTOR" FontWeight="Bold" Foreground="{StaticResource RuneBrush}" Margin="0,0,0,12"/>
+                        <TextBlock Text="Selected element(s)" Foreground="{StaticResource MutedBrush}"/>
+                        <TextBlock x:Name="SelectedElementText" Text="Select one or more elements from the list or grid." FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,4,0,16"/>
+                        <TextBlock Text="Position (metres / toolkit units)" Foreground="{StaticResource RuneBrush}" FontWeight="Bold" Margin="0,0,0,8"/>
+                        <UniformGrid Columns="3">
+                            <StackPanel Margin="0,0,6,9"><TextBlock Text="X" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="PosXBox" Padding="7" Background="#19251D" Foreground="{StaticResource TextBrush}" BorderBrush="#465342"/></StackPanel>
+                            <StackPanel Margin="0,0,6,9"><TextBlock Text="Y (height)" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="PosYBox" Padding="7" Background="#19251D" Foreground="{StaticResource TextBrush}" BorderBrush="#465342"/></StackPanel>
+                            <StackPanel Margin="0,0,0,9"><TextBlock Text="Z" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="PosZBox" Padding="7" Background="#19251D" Foreground="{StaticResource TextBrush}" BorderBrush="#465342"/></StackPanel>
+                        </UniformGrid>
+                        <TextBlock Text="Rotation (degrees)" Foreground="{StaticResource RuneBrush}" FontWeight="Bold" Margin="0,8,0,8"/>
+                        <UniformGrid Columns="3">
+                            <StackPanel Margin="0,0,6,9"><TextBlock Text="Pitch" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="PitchBox" Padding="7" Background="#19251D" Foreground="{StaticResource TextBrush}" BorderBrush="#465342"/></StackPanel>
+                            <StackPanel Margin="0,0,6,9"><TextBlock Text="Yaw" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="YawBox" Padding="7" Background="#19251D" Foreground="{StaticResource TextBrush}" BorderBrush="#465342"/></StackPanel>
+                            <StackPanel Margin="0,0,0,9"><TextBlock Text="Roll" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="RollBox" Padding="7" Background="#19251D" Foreground="{StaticResource TextBrush}" BorderBrush="#465342"/></StackPanel>
+                        </UniformGrid>
+                        <TextBlock Text="Variant (optional)" Foreground="{StaticResource MutedBrush}" Margin="0,8,0,4"/>
+                        <TextBox x:Name="VariantBox" Padding="7" Background="#19251D" Foreground="{StaticResource TextBrush}" BorderBrush="#465342"/>
+                        <TextBlock Text="Linked model asset" Foreground="{StaticResource RuneBrush}" FontWeight="Bold" Margin="0,12,0,4"/>
+                        <TextBlock x:Name="ModelAssetText" Text="No model asset assigned." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+                        <Button Content="Apply inspector changes" Click="Apply_Click" HorizontalAlignment="Left" Margin="0,14,0,0"/>
+                        <TextBlock Text="Dimensions are estimates based on element anchor coordinates. The editor does not yet know the real physical size of each Enshrouded building piece or its placement rules." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,18,0,0"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+        <Border Grid.Row="3" Background="#171B16" BorderBrush="#455A43" BorderThickness="1" CornerRadius="5" Padding="9" Margin="0,12,0,0">
+            <DockPanel LastChildFill="False"><TextBlock x:Name="StatusText" Text="Ready • 0 elements" Foreground="{StaticResource RuneBrush}"/><TextBlock DockPanel.Dock="Right" Text="Changes are local until saved." Foreground="{StaticResource MutedBrush}"/></DockPanel>
+        </Border>
+    </Grid>
+</Window>

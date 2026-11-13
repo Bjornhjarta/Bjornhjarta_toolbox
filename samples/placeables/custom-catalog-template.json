@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "name": "Custom Foundation (REPLACE)",
+      "typeId": "example.custom_foundation",
+      "category": "Foundations",
+      "notes": "Replace this with a verified Type ID from your own source.",
+      "source": "Illustrative example only"
+    },
+    {
+      "name": "Custom Wall (REPLACE)",
+      "typeId": "example.custom_wall",
+      "category": "Walls",
+      "notes": "Replace this with a verified Type ID from your own source.",
+      "source": "Illustrative example only"
+    },
+    {
+      "name": "Custom Roof (REPLACE)",
+      "typeId": "example.custom_roof",
+      "category": "Roofs",
+      "notes": "Replace this with a verified Type ID from your own source.",
+      "source": "Illustrative example only"
+    }
+  ]
+}

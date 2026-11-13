@@ -1,0 +1,124 @@
+<Window x:Class="Bjornhjarta.Desktop.ImageToBlueprintWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Icon="/Assets/Brand/BjornhjartaToolBox.ico"
+        Title="Blueprint Forge - Image to Blueprint (Experimental)"
+        Width="1190" Height="820" MinWidth="940" MinHeight="610"
+        WindowStartupLocation="CenterOwner" Background="{StaticResource BgBrush}">
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="IMAGE TO BLUEPRINT" Foreground="{StaticResource RuneBrush}" FontSize="23" FontWeight="Bold"/>
+            <TextBlock Text="Experimental local blockout generator • Editable result • No game files changed" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,0"/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="400"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Margin="0,0,12,0" BorderThickness="1" BorderBrush="#455A43" Background="#111711" Padding="12" CornerRadius="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="REFERENCE IMAGE" Foreground="{StaticResource RuneBrush}" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <Border Grid.Row="1" BorderBrush="#3A493A" BorderThickness="1" Background="#0A0E0A" Padding="7">
+                        <Image x:Name="ReferenceImage" Stretch="Uniform"/>
+                    </Border>
+                    <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0,10,0,8">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="EDITABLE PLAN PREVIEW" Foreground="{StaticResource RuneBrush}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                            <ComboBox x:Name="OpeningToolCombo" SelectedIndex="0" Width="180" Height="29" Foreground="White" Background="#213124">
+                                <ComboBoxItem Content="Paint door"/>
+                                <ComboBoxItem Content="Paint window"/>
+                                <ComboBoxItem Content="Erase opening"/>
+                                <ComboBoxItem Content="Toggle interior wall"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <TextBlock Text="2D only: click wall lines to mark openings. Use Toggle interior wall on a seam to add/remove an interior partition. Red = door, blue = window; amber = uncertain traced wall, teal = manual wall, dashed red = removed."
+                                   Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                    </StackPanel>
+                    <Border Grid.Row="3" BorderBrush="#3A493A" BorderThickness="1" Background="#0A0E0A" Padding="8">
+                        <Viewbox Stretch="Uniform">
+                            <Canvas x:Name="FootprintCanvas" Width="320" Height="320" Background="#101710"
+                                    Cursor="Cross" MouseLeftButtonDown="FootprintCanvas_MouseLeftButtonDown"/>
+                        </Viewbox>
+                    </Border>
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" BorderThickness="1" BorderBrush="#455A43" Background="{StaticResource PanelBrush}" Padding="14" CornerRadius="5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Button Content="Load image (PNG / JPEG / BMP)" Click="LoadImage_Click" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="FileText" Text="No image selected" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,5,0,14"/>
+                        <TextBlock Text="Reference type" Foreground="{StaticResource RuneBrush}" FontWeight="Bold"/>
+                        <ComboBox x:Name="ModeCombo" SelectedIndex="0" Margin="0,5,0,8" Height="31"
+                                  Background="#253B29" Foreground="White">
+                            <ComboBoxItem Content="2D plan / outline tracing"/>
+                            <ComboBoxItem Content="3D photo / conceptual blockout"/>
+                        </ComboBox>
+                        <TextBlock Text="2D plans: trace closed shape and approximate interior wall lines. 3D photos: estimate visible facade silhouette only, NOT true 3D or hidden geometry. If no shape is detected, nothing is inserted." Foreground="#E4C79E" TextWrapping="Wrap" Margin="0,0,0,12"/>
+                        <CheckBox x:Name="AutoSizeCheck" Content="Auto-size building grid from image (recommended)" IsChecked="True" Margin="0,0,0,8"/>
+                        <TextBlock Text="Known real building width in metres (optional)" Foreground="{StaticResource MutedBrush}"/>
+                        <TextBox x:Name="ReferenceWidthBox" Margin="0,3,0,7" Text="" ToolTip="Example: 80 means the width represents 80m. Leave blank if unknown (estimated scale)."/>
+                        <TextBlock Text="Image pixels per 4m cell when size is unknown" Foreground="{StaticResource MutedBrush}"/>
+                        <TextBox x:Name="PixelsPerCellBox" Margin="0,3,0,12" Text="24" ToolTip="Lower value = more grid cells, larger detailed footprint. Recommended 16–32."/>
+                        <TextBlock Text="Blueprint size (1 cell = 4 m)" Foreground="{StaticResource RuneBrush}" FontWeight="Bold" Margin="0,0,0,6"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,7,0">
+                                <TextBlock Text="Width cells" Foreground="{StaticResource MutedBrush}"/>
+                                <TextBox x:Name="WidthBox" Text="8" Padding="7" Background="#19251D" Foreground="White" BorderBrush="#465342"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="0,0,7,0">
+                                <TextBlock Text="Depth cells" Foreground="{StaticResource MutedBrush}"/>
+                                <TextBox x:Name="DepthBox" Text="8" Padding="7" Background="#19251D" Foreground="White" BorderBrush="#465342"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Wall layers" Foreground="{StaticResource MutedBrush}"/>
+                                <TextBox x:Name="LayersBox" Text="2" Padding="7" Background="#19251D" Foreground="White" BorderBrush="#465342"/>
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="With Auto-size enabled, width/depth below are calculated after Generate preview. A known reference width is needed for true metre scale." Foreground="#DFC0A0" TextWrapping="Wrap" Margin="0,6,0,7"/>
+                        <TextBlock x:Name="AnchorText" Text="Placement origin: (0, 0, 0) m" Foreground="{StaticResource MutedBrush}" Margin="0,7,0,16"/>
+                        <TextBlock Text="Allowed building pieces" Foreground="{StaticResource RuneBrush}" FontWeight="Bold"/>
+                        <TextBlock Text="Choose Foundations, Walls, Roofs and optionally Door/Window pieces. Opening labels must contain 'Door' or 'Window'. Multiple pieces of one type are alternated. Example IDs are not real game data." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,4,0,6"/>
+                        <Border BorderBrush="#425342" BorderThickness="1" Background="#111811" Height="185">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding PaletteEntries}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}" Margin="7,3" Foreground="#F4F1E8">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Entry.Name}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding Detail}" Foreground="#B5C2B2" FontSize="10"/>
+                                                </StackPanel>
+                                            </CheckBox>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Border>
+                        <TextBlock Text="Example Type IDs (example.*) are NOT verified Enshrouded IDs. Import real IDs to your local catalog before relying on placement." Foreground="#E4C79E" TextWrapping="Wrap" Margin="0,7,0,12"/>
+                        <Button Content="Trace image and generate preview" Click="Generate_Click" HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="PreviewText" Text="Load an image and generate a preview before inserting." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,10,0,0"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+        <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,12,0,0">
+            <TextBlock Text="Images remain local. Insert adds ordinary editable elements to the blueprint in one undo step." Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Content="Cancel" Click="Cancel_Click"/>
+                <Button x:Name="InsertButton" Content="Insert preview into blueprint" IsEnabled="False" Click="Insert_Click" Margin="8,0,0,0"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

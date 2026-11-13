@@ -1,0 +1,42 @@
+<UserControl x:Class="Bjornhjarta.Desktop.Blueprint3DEditorControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Background="{StaticResource BgBrush}" Focusable="True"
+        PreviewKeyDown="Editor_PreviewKeyDown">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" Margin="0,0,0,6" LastChildFill="False">
+            <TextBlock Text="3D EDITOR" FontSize="14" FontWeight="Bold"
+                       Foreground="{StaticResource RuneBrush}" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                <Button Content="Reload GLB" Padding="8,5" Click="Reload_Click"/>
+                <Button Content="Fit" Padding="8,5" Click="Fit_Click"/>
+                <Button Content="−" Width="30" Padding="6,5" Click="ZoomOut_Click"/>
+                <Button Content="+" Width="30" Padding="6,5" Click="ZoomIn_Click"/>
+            </StackPanel>
+        </DockPanel>
+        <Border Grid.Row="1" BorderBrush="#465342" BorderThickness="1" CornerRadius="6" Background="#0B100C" ClipToBounds="True">
+            <Grid x:Name="SceneSurface" Background="Transparent" Focusable="True"
+                  MouseDown="Viewport_MouseDown" MouseMove="Viewport_MouseMove"
+                  MouseUp="Viewport_MouseUp" MouseWheel="Viewport_MouseWheel"
+                  LostMouseCapture="Viewport_LostMouseCapture">
+                <Viewport3D x:Name="SceneViewport" ClipToBounds="True" IsHitTestVisible="True"/>
+                <Border VerticalAlignment="Top" HorizontalAlignment="Left" Margin="12" Padding="9,6"
+                        Background="#B90B130D" CornerRadius="4" IsHitTestVisible="False">
+                    <TextBlock Text="LEFT-DRAG PIECE: MOVE X/Z   •   ALT+DRAG: MOVE Y   •   CTRL/SHIFT+CLICK: MULTI-SELECT   •   LEFT-DRAG EMPTY: ORBIT   •   RIGHT-DRAG: PAN   •   WHEEL: ZOOM" TextWrapping="Wrap" MaxWidth="860" Foreground="{StaticResource RuneBrush}" FontSize="11"/>
+                </Border>
+            </Grid>
+        </Border>
+        <StackPanel Grid.Row="2" Margin="0,8,0,0">
+            <TextBlock x:Name="SelectedPieceText" Foreground="{StaticResource TextBrush}" FontWeight="SemiBold" Margin="0,0,0,7" TextWrapping="Wrap"/>
+            <TextBlock x:Name="SceneStatusText" Foreground="{StaticResource RuneBrush}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+            <TextBlock x:Name="SceneWarningsText" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+            <TextBlock Text="Drag and drop: release left mouse to commit one undoable move (4 m snap). Ctrl/Shift+click selects groups; Ctrl+Z undoes. Green outlines follow loaded GLB geometry when available; placeholders are 4 m. glTF units are not verified Enshrouded meters."
+                       Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

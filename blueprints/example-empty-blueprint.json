@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "metadata": {
+    "name": "Example - Empty Blueprint",
+    "description": "A starter blueprint document. No in-game objects are recorded yet.",
+    "createdUtc": "2026-11-11T00:00:00+00:00",
+    "toolkitVersion": "0.7.0"
+  },
+  "origin": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "elements": []
+}

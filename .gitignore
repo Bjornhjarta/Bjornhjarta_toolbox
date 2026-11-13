@@ -1,0 +1,9 @@
+.vs/
+bin/
+obj/
+.vscode/
+*.user
+*.suo
+*.log
+TestResults/
+artifacts/
